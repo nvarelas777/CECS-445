@@ -1,0 +1,211 @@
+//Nicholas Varelas
+//CECS 445
+//Professor P. Nguyen
+//This program is a simple Tic Tac Toe game
+//created in C#.
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+public class TTT
+{
+    private int[] board = new int[10];
+    
+    //The following method prints the board with
+    //its fitted borders and values inputted.
+    public void PrintBoard()
+    {
+        Console.WriteLine("     |     |     ");
+        for (int i = 1; i < board.Length; i++)
+        {   
+            //Marks the board with either 1 or -1.
+            if (board[i] == 1)
+            {               
+                if (i % 3 == 0)
+                {
+                    Console.WriteLine("  " + "X" + "  ");
+                    Console.WriteLine("     |     |     ");
+                    if (i <= 7)
+                    {
+                        Console.WriteLine("_____ _____ _____");
+                        Console.WriteLine("     |     |     ");
+                    }
+                }
+                else
+                    Console.Write("  " + "X" + "  |");
+            }
+            else if (board[i] == -1)
+            {                
+                if (i % 3 == 0)
+                {
+                    Console.WriteLine("  " + "O" + "  ");
+                    Console.WriteLine("     |     |     ");
+                    if (i <= 7)
+                    {
+                        Console.WriteLine("_____ _____ _____");
+                        Console.WriteLine("     |     |     ");
+                    }
+                }
+                else
+                    Console.Write("  " + "O" + "  |");
+            }
+            else if (i % 3 == 0)
+            {
+                Console.WriteLine("  " + i + "  ");
+                Console.WriteLine("     |     |     ");
+                if (i <= 7)
+                {
+                    Console.WriteLine("_____ _____ _____");
+                    Console.WriteLine("     |     |     ");
+                }
+            }
+            else
+            {
+                Console.Write("  " + i + "  |");
+            }
+
+        }
+    }
+
+    //The following method handles input validation to interact
+    //with the players and calls the printboard method every time
+    //a position is chosen.
+    public void PlayGame()
+    {
+        int player = 0;
+        int returnPlayer = 0;
+        int turn = 0;
+        while (turn <= 8)
+        {
+            if (turn % 2 == 0)
+            {
+                Console.WriteLine("Player 1 Turn: ");
+            }
+            else
+            {
+                Console.WriteLine("Player 2 Turn: ");
+            }
+
+            int input = 0;
+            //Input validation to confirm the input is a valid integer.
+            while (!int.TryParse(Console.ReadLine(), out input))
+            {
+                Console.WriteLine("Please enter a value 1 through 9!");
+            }
+            
+            //Validates the chosen spot has not been selected yet.
+            while (board[input] != 0)
+            {
+                Console.WriteLine("That spot has already been selected. Please pick a different one!");
+
+                while (!int.TryParse(Console.ReadLine(), out input))
+                {
+                    Console.WriteLine("Please enter a value 1 through 9!");
+                }               
+            }
+            //Makes the value in the array either 1 or -1 depending on the player.
+            if (turn % 2 == 0)
+            {
+                board[input] = 1;
+            }
+            else
+                board[input] = -1;
+
+            turn++;
+            PrintBoard();
+            //Call check winner method and receive the returned value.
+            returnPlayer = CheckWinner(player, turn);
+
+            if (returnPlayer == 1)
+            {
+                Console.WriteLine("Player 1 Wins!");
+                break;
+            }
+            if (returnPlayer == 2)
+            {
+                Console.WriteLine("Player 2 Wins!");
+                break;
+            }
+            if (returnPlayer ==3)
+            {
+                Console.WriteLine("It is a Draw!!!");
+            }
+        }
+    }
+
+    //Check winner method checks to see if there is winner through
+    //brute force checking every possible outcome after every move. It 
+    //returns the winning player, a draw, or no winner yet. Since we know
+    //the player who made the most recent turn, if the total is equal to 3 or 
+    //-3, then we know we have a winner.
+    int CheckWinner(int player, int turn)
+    {
+        //Determine player.
+        if (turn % 2 == 0)
+        {
+            player = 2;
+        }
+        else
+        {
+            player = 1;
+        }
+        //Determine outcome.
+        if (Math.Abs(board[1] + board[2] + board[3]) == 3)
+        {
+            return player;
+        }
+        else if (Math.Abs(board[4] + board[5] + board[6]) == 3)
+        {
+            return player;
+        }
+        else if (Math.Abs(board[7] + board[8] + board[9]) == 3)
+        {
+            return player;
+        }
+        else if (Math.Abs(board[1] + board[4] + board[7]) == 3)
+        {
+            return player;
+        }
+        else if (Math.Abs(board[2] + board[5] + board[8]) == 3)
+        {
+            return player;
+        }
+        else if (Math.Abs(board[3] + board[6] + board[9]) == 3)
+        {
+            return player;
+        }
+        else if (Math.Abs(board[1] + board[5] + board[9]) == 3)
+        {
+            return player;
+        }
+        else if (Math.Abs(board[3] + board[5] + board[7]) == 3)
+        {
+            return player;
+        }
+        else if (turn == 9)
+        {
+            return 3;
+        }
+        return 0;
+    }
+}//end class
+
+
+namespace TicTacToe
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Welcome to the game Tic Tac Toe.");
+            Console.WriteLine("Score 3 in a row down, cross, or diagnol to win!");
+            Console.WriteLine("Player 1 is up first. Pick a number 1 through 9.");
+            TTT game = new TTT();
+            game.PrintBoard();
+            game.PlayGame();
+            Console.ReadLine();
+        }
+    }
+}
